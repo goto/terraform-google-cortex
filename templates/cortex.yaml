@@ -1,0 +1,286 @@
+image:
+  tag: v1.6.0
+ingress:
+  annotations:
+    kubernetes.io/ingress.class: contour
+  hosts:
+    - host: ${host_ingress}
+      paths:
+        - /
+config:
+  auth_enabled: true
+  limits:
+    ingestion_rate: 100000
+    ingestion_burst_size: 200000
+  ingester:
+    max_transfer_retries: 0
+    lifecycler:
+      ring:
+        replication_factor: 1 
+        kvstore:
+          consul:
+            host: ${consul.host}
+
+  storage:
+    engine: blocks
+    gcs:
+      bucket_name: "${gcs.bucket_name}"
+    index_queries_cache_config:
+      memcached_client:
+        addresses: ${memcached.addresses}
+
+  blocks_storage:
+    backend: gcs
+    gcs:
+      bucket_name: "${gcs.bucket_name}"
+    bucket_store:
+      sync_dir: "/data/tsdb-sync"
+      index_cache:
+        backend: memcached
+        memcached:
+          addresses: ${memcached.addresses}
+      metadata_cache:
+        backend: memcached
+        memcached:
+          addresses: ${memcached.addresses}
+    tsdb:
+      dir: "/data/tsdb-sync"
+
+  distributor:
+    shard_by_all_labels: true
+    ring:
+      kvstore:
+        consul:
+          host: ${consul.host}
+
+  query_range:
+    split_queries_by_interval: 24h
+    align_queries_with_step: true
+    cache_results: true
+    results_cache:
+      cache:
+        memcached:
+          expiration: 1h
+        memcached_client:
+          timeout: 1s
+  ruler:
+    enable_api: true
+    enable_alertmanager_discovery: false
+    rule_path: "/data/rules"
+    storage:
+      type: gcs
+      gcs:
+        bucket_name: "${gcs.bucket_name}"
+    enable_sharding: true
+    ring:
+      kvstore:
+        consul:
+          host: ${consul.host}
+
+  store_gateway:
+    sharding_enabled: true
+    sharding_ring:
+      kvstore:
+        consul:
+          host: ${consul.host}
+
+  compactor:
+    data_dir: "/data"
+    sharding_enabled: true
+    sharding_ring:
+      kvstore:
+        consul:
+          host: ${consul.host}
+
+  alertmanager:
+    enable_api: true
+    external_url: /api/prom/alertmanager
+    storage:
+      type: gcs
+      gcs:
+        bucket_name: "${gcs.bucket_name}"
+        request_timeout: 50s
+
+## Root configs
+ruler:
+  replicas: 2
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+  extraVolumes:
+    - name: cortex-google-credentials
+      secret:
+        secretName: cortex-google-credentials
+  extraVolumeMounts:
+    - name: cortex-google-credentials
+      mountPath: /etc/cortex/google/
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/cortex/google/gcs.json"
+
+querier:
+  replicas: 2
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+  extraVolumes:
+    - name: cortex-google-credentials
+      secret:
+        secretName: cortex-google-credentials
+  extraVolumeMounts:
+    - name: cortex-google-credentials
+      mountPath: /etc/cortex/google/
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/cortex/google/gcs.json"
+
+distributor:
+  replicas: 2
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+  resources:
+    limits:
+      cpu: "1"
+      memory: 800Mi
+    requests:
+      cpu: "1"
+      memory: 500Mi
+
+nginx:
+  enabled: true
+  replicas: 4
+  annotations:
+    cloud.google.com/load-balancer-type: Internal
+  serviceType: LoadBalancer
+  config:
+    client_max_body_size: 5M
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'false'
+  resources:
+    limits:
+      cpu: 100m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 64Mi
+
+ingester:
+  replicas: 2
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+  statefulSet:
+    enabled: true
+  resources:
+    limits:
+      cpu: "5"
+      memory: 25Gi
+    requests:
+      cpu: "5"
+      memory: 25Gi
+  persistentVolume:
+    size: 30Gi
+
+  extraVolumes:
+    - name: cortex-google-credentials
+      secret:
+        secretName: cortex-google-credentials
+  extraVolumeMounts:
+    - name: cortex-google-credentials
+      mountPath: /etc/cortex/google/
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/cortex/google/gcs.json"
+
+table_manager:
+  replicas: 0
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+
+query_frontend:
+  replicas: 2
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+
+configs:
+  replicas: 0
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+
+store_gateway:
+  replicas: 2
+  persistentVolume:
+    size: 8Gi
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+
+  extraVolumes:
+    - name: cortex-google-credentials
+      secret:
+        secretName: cortex-google-credentials
+  extraVolumeMounts:
+    - name: cortex-google-credentials
+      mountPath: /etc/cortex/google/
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/cortex/google/gcs.json"
+
+compactor:
+  enabled: true
+  replicas: 2
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+  persistentVolume:
+    size: 150Gi
+  extraVolumes:
+    - name: cortex-google-credentials
+      secret:
+        secretName: cortex-google-credentials
+        defaultMode: 0640
+  extraVolumeMounts:
+    - name: cortex-google-credentials
+      mountPath: /etc/cortex/google/
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/cortex/google/gcs.json"
+
+alertmanager:
+  replicas: 3
+  podAnnotations:
+    prometheus.io/newrelic-scrape: 'true'
+  resources:
+    limits:
+      cpu: 1500m
+      memory: 750Mi
+    requests:
+      cpu: 1000m
+      memory: 500Mi
+  extraVolumes:
+    - name: cortex-google-credentials
+      secret:
+        secretName: cortex-google-credentials
+        defaultMode: 0640
+    - name: tmp-volume
+      emptyDir: { }
+  extraVolumeMounts:
+    - name: cortex-google-credentials
+      mountPath: /etc/cortex/google/
+    - name: tmp-volume
+      mountPath: /tmp
+  env:
+    - name: GOOGLE_APPLICATION_CREDENTIALS
+      value: "/etc/cortex/google/gcs.json"
+  statefulSet:
+    enabled: true
+  service:
+    annotations: {}
+    labels: {}
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+                - key: target
+                  operator: In
+                  values:
+                    - alertmanager
+            topologyKey: "failure-domain.beta.kubernetes.io/zone"
