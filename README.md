@@ -1,6 +1,6 @@
 # Terraform google Cortex Module
 
-Terraform module for setting up [cortex](cortexmetrics.io) on Kubernetes with block storage configs.
+Terraform module for setting up [cortex](https://cortexmetrics.io) on Kubernetes with block storage configs.
 It also sets up minimal consul deployment needed for cortex as KV store for the HA tracker.
 This module is using following [cortex-helm-chart](https://github.com/cortexproject/cortex-helm-chart)
 
