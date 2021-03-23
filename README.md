@@ -24,20 +24,22 @@ This module is meant for use with Terraform 0.12.
 
 ## Inputs
 
-| Name                            | Description                                                                 | Type     | Default    | Required |
-| ------------------------------- | --------------------------------------------------------------------------- | -------- | ---------- | :------: |
-| app_name                        | n/a                                                                         | `string` | `"cortex"` |    no    |
-| aws_zone_id                     | AWS DNS zone Id for ingress creation                                        | `string` | n/a        |   yes    |
-| cluster_name                    | Kubernetes cluster name to deploy cortex                                    | `string` | n/a        |   yes    |
-| ingress_dns                     | Domain name for ingress                                                     | `string` | n/a        |   yes    |
-| ingress_enabled                 | n/a                                                                         | `bool`   | `true`     |    no    |
-| labels                          | n/a                                                                         | `map`    | `{}`       |    no    |
-| load_balancer_ingress_name      | Loadbalancer ingress service name for kubernetes_service data resource      | `string` | n/a        |   yes    |
-| load_balancer_ingress_namespace | Loadbalancer ingress service namespace for kubernetes_service data resource | `any`    | n/a        |   yes    |
-| namespace                       | n/a                                                                         | `string` | `"cortex"` |    no    |
-| network_name                    | GCP Network name                                                            | `string` | n/a        |   yes    |
-| project_name                    | GCP Project name                                                            | `string` | n/a        |   yes    |
-| region                          | GCP Network region/location. eg: asia-southeast1                            | `string` | n/a        |   yes    |
+| Name                            | Description                                                                                                           | Type     | Default    | Required |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------- | ---------- | :------: |
+| app_name                        | n/a                                                                                                                   | `string` | `"cortex"` |    no    |
+| aws_zone_id                     | AWS DNS zone Id for ingress creation                                                                                  | `string` | n/a        |   yes    |
+| cluster_name                    | Kubernetes cluster name to deploy cortex                                                                              | `string` | n/a        |   yes    |
+| consul_helm_values_override     | String in yaml format to override helm values for consul. Ref: https://github.com/odpf/charts/tree/main/stable/consul | `string` | `""`       |    no    |
+| cortex_helm_values_override     | String in yaml format to override helm values for cortex. Ref: https://github.com/cortexproject/cortex-helm-chart     | `string` | `""`       |    no    |
+| ingress_dns                     | Domain name for ingress                                                                                               | `string` | n/a        |   yes    |
+| ingress_enabled                 | n/a                                                                                                                   | `bool`   | `true`     |    no    |
+| labels                          | n/a                                                                                                                   | `map`    | `{}`       |    no    |
+| load_balancer_ingress_name      | Loadbalancer ingress service name for kubernetes_service data resource                                                | `string` | n/a        |   yes    |
+| load_balancer_ingress_namespace | Loadbalancer ingress service namespace for kubernetes_service data resource                                           | `any`    | n/a        |   yes    |
+| namespace                       | n/a                                                                                                                   | `string` | `"cortex"` |    no    |
+| network_name                    | GCP Network name                                                                                                      | `string` | n/a        |   yes    |
+| project_name                    | GCP Project name                                                                                                      | `string` | n/a        |   yes    |
+| region                          | GCP Network region/location. eg: asia-southeast1                                                                      | `string` | n/a        |   yes    |
 
 ## Outputs
 

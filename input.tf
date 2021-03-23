@@ -56,3 +56,13 @@ variable "load_balancer_ingress_name" {
 variable "load_balancer_ingress_namespace" {
   description = "Loadbalancer ingress service namespace for kubernetes_service data resource"
 }
+
+variable "consul_helm_values_override" {
+  default = ""
+  description = "String in yaml format to override helm values for consul. Ref: https://github.com/odpf/charts/tree/main/stable/consul"
+}
+
+variable "cortex_helm_values_override" {
+  default = ""
+  description = "String in yaml format to override helm values for cortex. Ref: https://github.com/cortexproject/cortex-helm-chart"
+}

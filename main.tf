@@ -66,7 +66,8 @@ resource "helm_release" "consul" {
   values = [
     templatefile("${path.module}/templates/consul.yaml", {
       "labels" = jsonencode(local.labels)
-    })
+    }),
+    var.consul_helm_values_override
   ]
 }
 
@@ -92,7 +93,8 @@ resource "helm_release" "cortex" {
         host = "${var.app_name}-consul.${var.namespace}.svc.cluster.local:8500"
       },
       "host_ingress" = var.ingress_dns
-    })
+    }),
+    var.cortex_helm_values_override
   ]
 
   depends_on = [
