@@ -12,6 +12,24 @@ This module is meant for use with Terraform 0.12.
 
 - helm >= 3.0
 
+## Example Usage
+
+```
+module "cortex_app" {
+  source                          = "git::https://github.com/odif/terraform-google-cortex.git"
+  project_name                    = "gcp-project"
+  region                          = "asia-southeast-1"
+  namespace                       = "cortex"
+  network_name                    = "my-vpc"
+  aws_zone_id                     = "XXXX"
+  ingress_dns                     = "example.com"
+  load_balancer_ingress_name      = "ingress"
+  load_balancer_ingress_namespace = "infra"
+  consul_helm_values_override     = file("${path.module}/example_consul.yaml")
+  cortex_helm_values_override     = file("${path.module}/example_cortex.yaml")
+}
+```
+
 ## Providers
 
 | Name        | Version |
@@ -28,7 +46,6 @@ This module is meant for use with Terraform 0.12.
 | ------------------------------- | --------------------------------------------------------------------------------------------------------------------- | -------- | ---------- | :------: |
 | app_name                        | n/a                                                                                                                   | `string` | `"cortex"` |    no    |
 | aws_zone_id                     | AWS DNS zone Id for ingress creation                                                                                  | `string` | n/a        |   yes    |
-| cluster_name                    | Kubernetes cluster name to deploy cortex                                                                              | `string` | n/a        |   yes    |
 | consul_helm_values_override     | String in yaml format to override helm values for consul. Ref: https://github.com/odpf/charts/tree/main/stable/consul | `string` | `""`       |    no    |
 | cortex_helm_values_override     | String in yaml format to override helm values for cortex. Ref: https://github.com/cortexproject/cortex-helm-chart     | `string` | `""`       |    no    |
 | ingress_dns                     | Domain name for ingress                                                                                               | `string` | n/a        |   yes    |

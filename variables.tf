@@ -17,12 +17,6 @@ variable "region" {
   description = "GCP Network region/location. eg: asia-southeast1"
   type        = string
 }
-
-variable "cluster_name" {
-  description = "Kubernetes cluster name to deploy cortex"
-  type        = string
-}
-
 variable "namespace" {
   default = "cortex"
   type    = string
@@ -58,11 +52,11 @@ variable "load_balancer_ingress_namespace" {
 }
 
 variable "consul_helm_values_override" {
-  default = ""
+  default     = ""
   description = "String in yaml format to override helm values for consul. Ref: https://github.com/odpf/charts/tree/main/stable/consul"
 }
 
 variable "cortex_helm_values_override" {
-  default = ""
+  default     = ""
   description = "String in yaml format to override helm values for cortex. Ref: https://github.com/cortexproject/cortex-helm-chart"
 }
