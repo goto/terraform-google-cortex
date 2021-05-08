@@ -51,12 +51,26 @@ variable "load_balancer_ingress_namespace" {
   description = "Loadbalancer ingress service namespace for kubernetes_service data resource"
 }
 
-variable "consul_helm_values_override" {
-  default     = ""
-  description = "String in yaml format to override helm values for consul. Ref: https://github.com/odpf/charts/tree/main/stable/consul"
+variable "consul_helm_release_config" {
+  default = {
+    wait            = true,
+    timeout         = 150,
+    repository      = "https://odpf.github.io/charts"
+    chart           = "consul"
+    version         = "0.1.0"
+    values_override = "" ## String in yaml format to override helm values for consul. Ref: https://github.com/odpf/charts/tree/main/stable/consul
+  }
+  description = "Configs mapped to terraform helm_release provider. Ref:https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release"
 }
 
-variable "cortex_helm_values_override" {
-  default     = ""
-  description = "String in yaml format to override helm values for cortex. Ref: https://github.com/cortexproject/cortex-helm-chart"
+variable "cortex_helm_release_config" {
+  default = {
+    wait            = true,
+    timeout         = 600,
+    repository      = "https://cortexproject.github.io/cortex-helm-chart",
+    chart           = "cortex",
+    version         = "0.4.0",
+    values_override = "" ## String in yaml format to override helm values for consul. Ref: https://github.com/odpf/charts/tree/main/stable/consul
+  }
+  description = "Configs mapped to terraform helm_release provider. Ref:https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release"
 }
