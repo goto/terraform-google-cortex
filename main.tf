@@ -31,11 +31,11 @@ resource "google_service_account_key" "service_account_key" {
 
 resource "kubernetes_secret" "cortex-google-credentials" {
   metadata {
-    name      = "cortex-google-credentials"
+    name      = "${var.app_name}-google-credentials"
     namespace = var.namespace
-    labels    = { app = "cortex" }
+    labels    = merge(var.labels, { app = var.app_name })
     annotations = {
-      "kubernetes.io/service-account.name" = "cortex-google-credentials"
+      "kubernetes.io/service-account.name" = "${var.app_name}-google-credentials"
     }
   }
 
@@ -79,8 +79,8 @@ resource "helm_release" "cortex" {
   repository        = "https://cortexproject.github.io/cortex-helm-chart"
   chart             = "cortex"
   version           = "0.4.0"
-  wait              = false
-  timeout           = 600
+  wait              = true
+  timeout           = 1200
   values = [
     templatefile("${path.module}/templates/cortex.yaml", {
       memcached = {
@@ -93,6 +93,7 @@ resource "helm_release" "cortex" {
         host = "${var.app_name}-consul.${var.namespace}.svc.cluster.local:8500"
       },
       "host_ingress" = var.ingress_dns
+      "app_name" = var.app_name
     }),
     var.cortex_helm_values_override
   ]
