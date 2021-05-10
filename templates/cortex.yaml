@@ -107,11 +107,11 @@ ruler:
   podAnnotations:
     prometheus.io/newrelic-scrape: 'true'
   extraVolumes:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       secret:
-        secretName: cortex-google-credentials
+        secretName: ${app_name}-google-credentials
   extraVolumeMounts:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       mountPath: /etc/cortex/google/
   env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -122,11 +122,11 @@ querier:
   podAnnotations:
     prometheus.io/newrelic-scrape: 'true'
   extraVolumes:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       secret:
-        secretName: cortex-google-credentials
+        secretName: ${app_name}-google-credentials
   extraVolumeMounts:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       mountPath: /etc/cortex/google/
   env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -146,12 +146,12 @@ distributor:
 
 nginx:
   enabled: true
-  replicas: 4
   annotations:
     cloud.google.com/load-balancer-type: Internal
   serviceType: LoadBalancer
   config:
     client_max_body_size: 5M
+  replicas: 2
   podAnnotations:
     prometheus.io/newrelic-scrape: 'false'
   resources:
@@ -179,11 +179,11 @@ ingester:
     size: 30Gi
 
   extraVolumes:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       secret:
-        secretName: cortex-google-credentials
+        secretName: ${app_name}-google-credentials
   extraVolumeMounts:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       mountPath: /etc/cortex/google/
   env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -212,11 +212,11 @@ store_gateway:
     prometheus.io/newrelic-scrape: 'true'
 
   extraVolumes:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       secret:
-        secretName: cortex-google-credentials
+        secretName: ${app_name}-google-credentials
   extraVolumeMounts:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       mountPath: /etc/cortex/google/
   env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -230,12 +230,12 @@ compactor:
   persistentVolume:
     size: 150Gi
   extraVolumes:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       secret:
-        secretName: cortex-google-credentials
+        secretName: ${app_name}-google-credentials
         defaultMode: 0640
   extraVolumeMounts:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       mountPath: /etc/cortex/google/
   env:
     - name: GOOGLE_APPLICATION_CREDENTIALS
@@ -253,14 +253,14 @@ alertmanager:
       cpu: 1000m
       memory: 500Mi
   extraVolumes:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       secret:
-        secretName: cortex-google-credentials
+        secretName: ${app_name}-google-credentials
         defaultMode: 0640
     - name: tmp-volume
       emptyDir: { }
   extraVolumeMounts:
-    - name: cortex-google-credentials
+    - name: ${app_name}-google-credentials
       mountPath: /etc/cortex/google/
     - name: tmp-volume
       mountPath: /tmp

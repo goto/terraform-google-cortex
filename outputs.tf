@@ -7,3 +7,8 @@ output "memcache" {
   value       = google_memcache_instance.cortex
   description = "GCP memory store details"
 }
+
+output "ingress_dns" {
+  description = "DNS zone record details for ingress"
+  value = (var.ingress_enabled)? aws_route53_record.dns_ingress[0] : null
+}
