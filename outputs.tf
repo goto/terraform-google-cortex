@@ -1,6 +1,11 @@
-output "bucket" {
-  value       = google_storage_bucket.cortex
+output "data_bucket" {
+  value       = google_storage_bucket.cortex_data
   description = "GCS Bucket details for block storage"
+}
+
+output "config_bucket" {
+  value       = google_storage_bucket.cortex_configs
+  description = "GCS Bucket details for configs"
 }
 
 output "memcache" {

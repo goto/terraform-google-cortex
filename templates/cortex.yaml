@@ -24,7 +24,7 @@ config:
   storage:
     engine: blocks
     gcs:
-      bucket_name: "${gcs.bucket_name}"
+      bucket_name: "${gcs.data_bucket_name}"
     index_queries_cache_config:
       memcached_client:
         addresses: ${memcached.addresses}
@@ -32,7 +32,7 @@ config:
   blocks_storage:
     backend: gcs
     gcs:
-      bucket_name: "${gcs.bucket_name}"
+      bucket_name: "${gcs.data_bucket_name}"
     bucket_store:
       sync_dir: "/data/tsdb-sync"
       index_cache:
@@ -70,7 +70,7 @@ config:
     storage:
       type: gcs
       gcs:
-        bucket_name: "${gcs.bucket_name}"
+        bucket_name: "${gcs.configs_bucket_name}"
     enable_sharding: true
     ring:
       kvstore:
@@ -98,7 +98,7 @@ config:
     storage:
       type: gcs
       gcs:
-        bucket_name: "${gcs.bucket_name}"
+        bucket_name: "${gcs.configs_bucket_name}"
         request_timeout: 50s
 
 ## Root configs
