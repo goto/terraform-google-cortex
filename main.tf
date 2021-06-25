@@ -1,5 +1,13 @@
-resource "google_storage_bucket" "cortex" {
+resource "google_storage_bucket" "cortex_data" {
   name          = var.app_name
+  location      = "asia"
+  project       = var.project_name
+  storage_class = "MULTI_REGIONAL"
+  labels        = merge(local.labels, { component = "bucket" })
+}
+
+resource "google_storage_bucket" "cortex_configs" {
+  name          = "${var.app_name}-configs"
   location      = "asia"
   project       = var.project_name
   storage_class = "MULTI_REGIONAL"
@@ -50,8 +58,14 @@ resource "kubernetes_secret" "cortex-google-credentials" {
   type = "Opaque"
 }
 
-resource "google_storage_bucket_iam_member" "buckets_access" {
-  bucket = google_storage_bucket.cortex.name
+resource "google_storage_bucket_iam_member" "data_buckets_access" {
+  bucket = google_storage_bucket.cortex_data.name
+  role   = "roles/storage.admin"
+  member = "serviceAccount:${google_service_account.service_account.email}"
+}
+
+resource "google_storage_bucket_iam_member" "configs_buckets_access" {
+  bucket = google_storage_bucket.cortex_configs.name
   role   = "roles/storage.admin"
   member = "serviceAccount:${google_service_account.service_account.email}"
 }
@@ -89,7 +103,8 @@ resource "helm_release" "cortex" {
         addresses = google_memcache_instance.cortex.discovery_endpoint
       }
       "gcs" = {
-        "bucket_name" = google_storage_bucket.cortex.id
+        "data_bucket_name" = google_storage_bucket.cortex_data.id
+        "configs_bucket_name" = google_storage_bucket.cortex_configs.id
       },
       "consul" = {
         host = "${var.app_name}-consul.${var.namespace}.svc.cluster.local:8500"
