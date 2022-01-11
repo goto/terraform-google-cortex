@@ -138,10 +138,8 @@ distributor:
     prometheus.io/newrelic-scrape: 'true'
   resources:
     limits:
-      cpu: "1"
       memory: 800Mi
     requests:
-      cpu: "1"
       memory: 500Mi
 
 nginx:
@@ -156,10 +154,8 @@ nginx:
     prometheus.io/newrelic-scrape: 'false'
   resources:
     limits:
-      cpu: 100m
       memory: 128Mi
     requests:
-      cpu: 50m
       memory: 64Mi
 
 ingester:
@@ -170,10 +166,8 @@ ingester:
     enabled: true
   resources:
     limits:
-      cpu: "5"
       memory: 25Gi
     requests:
-      cpu: "5"
       memory: 25Gi
   persistentVolume:
     size: 30Gi
