@@ -136,11 +136,6 @@ distributor:
   replicas: 2
   podAnnotations:
     prometheus.io/newrelic-scrape: 'true'
-  resources:
-    limits:
-      memory: 800Mi
-    requests:
-      memory: 500Mi
 
 nginx:
   enabled: true
@@ -152,11 +147,6 @@ nginx:
   replicas: 2
   podAnnotations:
     prometheus.io/newrelic-scrape: 'false'
-  resources:
-    limits:
-      memory: 128Mi
-    requests:
-      memory: 64Mi
 
 ingester:
   replicas: 2
@@ -164,11 +154,6 @@ ingester:
     prometheus.io/newrelic-scrape: 'true'
   statefulSet:
     enabled: true
-  resources:
-    limits:
-      memory: 25Gi
-    requests:
-      memory: 25Gi
   persistentVolume:
     size: 30Gi
 
@@ -239,11 +224,6 @@ alertmanager:
   replicas: 3
   podAnnotations:
     prometheus.io/newrelic-scrape: 'true'
-  resources:
-    limits:
-      memory: 750Mi
-    requests:
-      memory: 500Mi
   extraVolumes:
     - name: ${app_name}-google-credentials
       secret:
