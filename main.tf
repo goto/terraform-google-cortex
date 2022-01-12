@@ -19,11 +19,11 @@ resource "google_memcache_instance" "cortex" {
   name               = "${var.app_name}-memcache"
   region             = var.region
   authorized_network = "projects/${var.project_name}/global/networks/${var.network_name}"
-  node_count         = 1
+  node_count         = var.memcached_config.node_count
   memcache_version   = "MEMCACHE_1_5"
   node_config {
-    cpu_count      = 1
-    memory_size_mb = 1024
+    cpu_count      = var.memcached_config.node_config.cpu_count
+    memory_size_mb = var.memcached_config.node_config.memory_size_mb
   }
   labels = merge(local.labels, { component = "memcache" })
 }
