@@ -74,3 +74,14 @@ variable "cortex_helm_release_config" {
   }
   description = "Configs mapped to terraform helm_release provider. Ref:https://registry.terraform.io/providers/hashicorp/helm/latest/docs/resources/release"
 }
+
+variable "memcached_config" {
+  default = {
+    node_count = 1
+    node_config = {
+      cpu_count = 1
+      memory_size_mb = 1024
+    }
+  }
+  description = "Configs for the GCP memorystore memcached cluster"
+}
